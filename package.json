@@ -42,6 +42,7 @@
     "lint-pass"
   ],
   "dependencies": {
+    "axios": "^0.16.2",
     "lowlight": "^1.5.0",
     "md5": "^2.2.1",
     "moment": "^2.17.1",
