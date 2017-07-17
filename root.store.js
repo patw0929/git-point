@@ -1,11 +1,14 @@
 import { compose, createStore, applyMiddleware } from 'redux';
 import { autoRehydrate } from 'redux-persist';
 import createLogger from 'redux-logger';
-import reduxThunk from 'redux-thunk';
+import ApiClient from 'api/ApiClient';
+import createMiddleware from 'middleware/clientMiddleware';
 import { rootReducer } from './root.reducer';
 
+const client = new ApiClient();
+
 const getMiddleware = () => {
-  const middlewares = [reduxThunk];
+  const middlewares = [createMiddleware(client)];
 
   if (__DEV__) {
     if (process.env.LOGGER_ENABLED) {
