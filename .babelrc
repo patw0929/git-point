@@ -26,7 +26,6 @@
           "middleware": "middleware"
         }
       }
-    ],
-    "transform-inline-environment-variables"
+    ]
   ]
 }
