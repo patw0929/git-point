@@ -5,7 +5,7 @@ const methods = ['get', 'post', 'put', 'patch', 'del'];
 export default class ApiClient {
   constructor() {
     methods.forEach(method => {
-      this[method] = (path, { token, params = {} }) => {
+      this[method] = (path, { token, customHeaders = {} }) => {
         const headers = {
           Accept: 'application/vnd.github.v3+json',
           'Cache-Control': 'no-cache',
@@ -21,7 +21,7 @@ export default class ApiClient {
           responseType: 'json',
           headers: {
             ...headers,
-            ...params,
+            ...customHeaders,
           },
         });
       };

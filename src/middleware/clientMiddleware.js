@@ -24,11 +24,11 @@ function parseLinkHeader(header) {
   return links;
 }
 
-export default function clientMiddleware(client, extraArgument) {
+export default function clientMiddleware(client) {
   return ({ dispatch, getState }) => {
     return next => action => {
       if (typeof action === 'function') {
-        return action(dispatch, getState, extraArgument);
+        return action(dispatch, getState);
       }
 
       const state = getState();
@@ -40,6 +40,8 @@ export default function clientMiddleware(client, extraArgument) {
       }
 
       const { promise, types, ...rest } = action;
+
+      // console.log(promise, rest, action, token);
 
       if (!promise) {
         return next(action);
@@ -73,8 +75,8 @@ export default function clientMiddleware(client, extraArgument) {
               }
 
               meta = {
-                next_page_url: link.next || null,
-                prev_page_url: link.prev || null,
+                nextPageUrl: link.next || null,
+                prevPageUrl: link.prev || null,
                 currentPage,
               };
             }

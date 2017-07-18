@@ -1,33 +1,34 @@
-import { compose, createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { autoRehydrate } from 'redux-persist';
-import createLogger from 'redux-logger';
+import { composeWithDevTools } from 'remote-redux-devtools'; // eslint-disable-line import/no-extraneous-dependencies
 import ApiClient from 'api/ApiClient';
 import createMiddleware from 'middleware/clientMiddleware';
 import { rootReducer } from './root.reducer';
 
 const client = new ApiClient();
+const middlewares = [createMiddleware(client)];
 
-const getMiddleware = () => {
-  const middlewares = [createMiddleware(client)];
+let enhancer;
 
-  if (__DEV__) {
-    if (process.env.LOGGER_ENABLED) {
-      middlewares.push(createLogger());
-    }
-  }
+if (__DEV__) {
+  const composeEnhancers = composeWithDevTools({
+    name: 'debugger',
+    hostname: 'localhost',
+    port: 5678,
+    suppressConnectErrors: false,
+  });
 
-  return applyMiddleware(...middlewares);
-};
+  enhancer = composeEnhancers(applyMiddleware(...middlewares));
+} else {
+  enhancer = applyMiddleware(...middlewares);
+}
 
 const getEnhancers = () => {
-  const enhancers = [];
+  const enhancers = [enhancer];
 
   enhancers.push(autoRehydrate());
 
   return enhancers;
 };
 
-export const configureStore = createStore(
-  rootReducer,
-  compose(getMiddleware(), ...getEnhancers())
-);
+export const configureStore = createStore(rootReducer, {}, ...getEnhancers());
