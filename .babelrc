@@ -12,6 +12,7 @@
           "./src"
         ],
         "alias": {
+          "containers": "containers",
           "components": "components",
           "search": "search",
           "notifications": "notifications",
