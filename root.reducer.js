@@ -4,7 +4,7 @@ import { userReducer } from 'user';
 import { repositoryReducer } from 'repository';
 import { organizationReducer } from 'organization';
 import { issueReducer } from 'issue';
-import { searchReducer } from 'search';
+import { searchReposReducer, searchUsersReducer } from 'search';
 import { notificationsReducer } from 'notifications';
 
 export const rootReducer = combineReducers({
@@ -13,6 +13,9 @@ export const rootReducer = combineReducers({
   repository: repositoryReducer,
   organization: organizationReducer,
   issue: issueReducer,
-  search: searchReducer,
+  search: combineReducers({
+    repos: searchReposReducer,
+    users: searchUsersReducer,
+  }),
   notifications: notificationsReducer,
 });

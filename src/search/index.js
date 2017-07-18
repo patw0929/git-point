@@ -1,5 +1,6 @@
 export * from './search.action';
-export * from './search.reducer';
+export * from './searchRepos.reducer';
+export * from './searchUsers.reducer';
 export * from './search.type';
 
 export * from './screens';
