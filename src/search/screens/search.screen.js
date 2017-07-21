@@ -317,7 +317,7 @@ export default class Search extends Component {
       );
     }
 
-    if (reposIsRefreshing && !this._reposRefreshControl[reposIsRefreshing]) {
+    if (!this._reposRefreshControl[reposIsRefreshing]) {
       this._reposRefreshControl[reposIsRefreshing] = (
         <RefreshControl
           refreshing={reposIsRefreshing}
@@ -327,7 +327,7 @@ export default class Search extends Component {
       );
     }
 
-    if (usersIsRefreshing && !this._usersRefreshControl[usersIsRefreshing]) {
+    if (!this._usersRefreshControl[usersIsRefreshing]) {
       this._usersRefreshControl[usersIsRefreshing] = (
         <RefreshControl
           refreshing={usersIsRefreshing}
