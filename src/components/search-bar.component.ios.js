@@ -2,6 +2,7 @@ import React from 'react';
 import RNSearchBar from 'react-native-search-bar';
 
 type Props = {
+  text?: string,
   textColor?: string,
   textFieldBackgroundColor?: string,
   showsCancelButton?: boolean,
@@ -9,9 +10,11 @@ type Props = {
   onFocus: Function,
   onCancelButtonPress: Function,
   onSearchButtonPress: Function,
+  onChangeText: Function,
 };
 
 export const SearchBar = ({
+  text,
   textColor,
   textFieldBackgroundColor,
   showsCancelButton,
@@ -19,11 +22,13 @@ export const SearchBar = ({
   onFocus,
   onCancelButtonPress,
   onSearchButtonPress,
+  onChangeText,
 }: Props) =>
   <RNSearchBar
     ref={ref => {
       this.searchBar = ref;
     }}
+    text={text}
     textColor={textColor}
     textFieldBackgroundColor={textFieldBackgroundColor}
     showsCancelButton={showsCancelButton}
@@ -35,16 +40,18 @@ export const SearchBar = ({
       }
       this.searchBar.unFocus();
     }}
-    onSearchButtonPress={text => {
+    onSearchButtonPress={() => {
       if (typeof onSearchButtonPress === 'function') {
-        onSearchButtonPress(text);
+        onSearchButtonPress();
       }
       this.searchBar.unFocus();
     }}
+    onChangeText={onChangeText}
     hideBackground
   />;
 
 SearchBar.defaultProps = {
+  text: '',
   textColor: '',
   textFieldBackgroundColor: '',
   showsCancelButton: false,

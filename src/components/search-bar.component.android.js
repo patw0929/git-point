@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import MDSearchBar from 'react-native-material-design-searchbar';
 
 type Props = {
+  text?: string,
   textColor?: string,
   textFieldBackgroundColor?: string,
   showsCancelButton?: boolean,
@@ -10,17 +10,11 @@ type Props = {
   onFocus: Function,
   onCancelButtonPress: Function,
   onSearchButtonPress: Function,
+  onChangeText: Function,
 };
 
-const styles = StyleSheet.create({
-  textInput: {
-    borderWidth: 0,
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
-});
-
 export const SearchBar = ({
+  text,
   textColor,
   textFieldBackgroundColor,
   showsCancelButton,
@@ -28,31 +22,33 @@ export const SearchBar = ({
   onFocus,
   onCancelButtonPress,
   onSearchButtonPress,
+  onChangeText,
 }: Props) =>
   <MDSearchBar
+    inputProps={{
+      defaultValue: text,
+    }}
     textStyle={textColor ? { color: textColor } : null}
-    inputStyle={[
-      styles.textInput,
-      textFieldBackgroundColor
-        ? { backgroundColor: textFieldBackgroundColor }
-        : null,
-    ]}
+    inputStyle={{
+      borderWidth: 0,
+      borderRadius: 5,
+      marginHorizontal: 5,
+      backgroundColor: textFieldBackgroundColor,
+    }}
     alwaysShowBackButton={showsCancelButton}
     placeholder={placeholder}
-    onFocus={onFocus}
-    onClose={onCancelButtonPress}
-    onBackPress={onCancelButtonPress}
-    onSubmitEditing={event => {
-      if (typeof onSearchButtonPress === 'function') {
-        onSearchButtonPress(event.nativeEvent.text);
-      }
-    }}
+    onFocus={() => onFocus()}
+    onClose={() => onCancelButtonPress()}
+    onBackPress={() => onCancelButtonPress()}
+    onSubmitEditing={() => onSearchButtonPress()}
+    onSearchChange={query => onChangeText(query)}
     height={40}
     autoCorrect={false}
     returnKeyType="search"
   />;
 
 SearchBar.defaultProps = {
+  text: '',
   textColor: undefined,
   textFieldBackgroundColor: undefined,
   showsCancelButton: false,
