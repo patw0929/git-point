@@ -4,7 +4,7 @@ const END = 'end';
 const SEARCH_API = 'https://api.github.com/search/';
 
 function shouldFetch(state, type, query, isMore = false) {
-  const currentResult = state.search[type][query];
+  const currentResult = state.search[type].list[query];
 
   if (!currentResult || !currentResult.items) {
     return true;
@@ -21,8 +21,11 @@ function shouldFetch(state, type, query, isMore = false) {
   return currentResult.didInvalidate;
 }
 
-export function searchRepos(query, { isMore = false, nextUrl } = {}) {
-  const SEARCH_REPOS_API = `${SEARCH_API}repositories?q=${query}`;
+export function searchRepos(
+  query,
+  { isRefreshing = false, isMore = false, nextUrl } = {}
+) {
+  const SEARCH_REPOS_API = `${SEARCH_API}repositories?q=${query.toLowerCase()}`;
   let api = nextUrl;
 
   if (!api) {
@@ -34,8 +37,10 @@ export function searchRepos(query, { isMore = false, nextUrl } = {}) {
   }
 
   return {
-    query: query.toLowerCase(),
     isMore,
+    isRefreshing,
+    query: query.toLowerCase(),
+    selectedType: 0,
     types: [SEARCH_REPOS.PENDING, SEARCH_REPOS.SUCCESS, SEARCH_REPOS.ERROR],
     promise: (client, ctx) => client.get(api, { ...ctx }),
   };
@@ -43,10 +48,8 @@ export function searchRepos(query, { isMore = false, nextUrl } = {}) {
 
 export function searchReposIfNeeded(query) {
   return (dispatch, getState) => {
-    const accessToken = getState().auth.accessToken;
-
-    if (shouldFetch(getState(), query, false)) {
-      return dispatch(searchRepos(query, accessToken));
+    if (shouldFetch(getState(), 'repos', query, false)) {
+      return dispatch(searchRepos(query));
     }
 
     return Promise.resolve();
@@ -56,26 +59,26 @@ export function searchReposIfNeeded(query) {
 export function searchReposMoreIfNeeded(query) {
   return (dispatch, getState) => {
     const state = getState();
-    const accessToken = state.auth.accessToken;
 
-    if (shouldFetch(state, query, true)) {
-      const searchReposState = state.search.repos.byId[query];
+    if (shouldFetch(state, 'repos', query, true)) {
+      const searchReposState = state.search.repos.list[query];
       const nextUrl =
         searchReposState &&
         searchReposState.meta &&
         searchReposState.meta.nextPageUrl;
 
-      return dispatch(
-        searchRepos(query, accessToken, { isMore: true, nextUrl })
-      );
+      return dispatch(searchRepos(query, { isMore: true, nextUrl }));
     }
 
     return Promise.resolve();
   };
 }
 
-export function searchUsers(query, { isMore = false, nextUrl } = {}) {
-  const SEARCH_USERS_API = `${SEARCH_API}users?q=${query}`;
+export function searchUsers(
+  query,
+  { isRefreshing = false, isMore = false, nextUrl } = {}
+) {
+  const SEARCH_USERS_API = `${SEARCH_API}users?q=${query.toLowerCase()}`;
   let api = nextUrl;
 
   if (!api) {
@@ -87,8 +90,10 @@ export function searchUsers(query, { isMore = false, nextUrl } = {}) {
   }
 
   return {
-    query: query.toLowerCase(),
     isMore,
+    isRefreshing,
+    query: query.toLowerCase(),
+    selectedType: 1,
     types: [SEARCH_USERS.PENDING, SEARCH_USERS.SUCCESS, SEARCH_USERS.ERROR],
     promise: (client, ctx) => client.get(api, { ...ctx }),
   };
@@ -96,10 +101,8 @@ export function searchUsers(query, { isMore = false, nextUrl } = {}) {
 
 export function searchUsersIfNeeded(query) {
   return (dispatch, getState) => {
-    const accessToken = getState().auth.accessToken;
-
-    if (shouldFetch(getState(), query, false)) {
-      return dispatch(searchUsers(query, accessToken));
+    if (shouldFetch(getState(), 'users', query, false)) {
+      return dispatch(searchUsers(query));
     }
 
     return Promise.resolve();
@@ -109,18 +112,15 @@ export function searchUsersIfNeeded(query) {
 export function searchUsersMoreIfNeeded(query) {
   return (dispatch, getState) => {
     const state = getState();
-    const accessToken = state.auth.accessToken;
 
-    if (shouldFetch(state, query, true)) {
-      const searchUsersState = state.search.users.byId[query];
+    if (shouldFetch(state, 'users', query, true)) {
+      const searchUsersState = state.search.users.list[query];
       const nextUrl =
         searchUsersState &&
         searchUsersState.meta &&
         searchUsersState.meta.nextPageUrl;
 
-      return dispatch(
-        searchUsers(query, accessToken, { isMore: true, nextUrl })
-      );
+      return dispatch(searchUsers(query, { isMore: true, nextUrl }));
     }
 
     return Promise.resolve();

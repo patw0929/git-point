@@ -34,6 +34,7 @@ const initialByIdOne = {
 };
 
 const initialListOne = {
+  isRefreshing: false,
   isFetching: false,
   didInvalidate: false,
   items: null,
@@ -95,6 +96,7 @@ function processListOne(state = initialListOne, action) {
     case SEARCH_USERS.PENDING: {
       return {
         ...state,
+        isRefreshing: action.isRefreshing,
         isFetching: true,
         didInvalidate: false,
       };
@@ -103,6 +105,7 @@ function processListOne(state = initialListOne, action) {
       return {
         ...state,
         isFetching: false,
+        isRefreshing: false,
         didInvalidate: false,
         error: action.error,
       };
@@ -148,6 +151,7 @@ function processListOne(state = initialListOne, action) {
         meta,
         items: newItems,
         isFetching: false,
+        isRefreshing: false,
         didInvalidate: false,
         error: null,
       };
