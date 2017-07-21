@@ -6,8 +6,8 @@ import { emojifyText } from 'utils';
 import { colors, languageColors, fonts, normalize } from 'config';
 
 type Props = {
-  repository: Object,
   navigation: Object,
+  repo: Object,
 };
 
 const styles = StyleSheet.create({
@@ -97,16 +97,15 @@ const renderTitle = repository =>
     </View>
   </View>;
 
-export const RepositoryListItem = ({ repository, navigation }: Props) =>
+export const RepositoryListItem = ({ navigation, repo }: Props) =>
   <ListItem
-    key={repository.id}
-    title={renderTitle(repository)}
+    title={renderTitle(repo)}
     titleStyle={styles.title}
     rightIcon={{
-      name: repository.fork ? 'repo-forked' : 'repo',
+      name: repo.fork ? 'repo-forked' : 'repo',
       color: colors.grey,
       type: 'octicon',
     }}
     underlayColor={colors.greyLight}
-    onPress={() => navigation.navigate('Repository', { repository })}
+    onPress={() => navigation.navigate('Repository', { repository: repo })}
   />;

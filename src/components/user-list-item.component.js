@@ -12,6 +12,7 @@ import { Icon } from 'react-native-elements';
 import { colors, fonts, normalize } from 'config';
 
 type Props = {
+  navigation: Object,
   user: Object,
   title: any,
   subtitle: string,
